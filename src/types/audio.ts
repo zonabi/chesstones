@@ -1,4 +1,5 @@
 import type { PieceType } from "./chess";
+import type { RootNote } from "@/audio/scales";
 
 /** ADSR envelope + waveform config for a piece type */
 export interface PieceAudioConfig {
@@ -15,7 +16,7 @@ export type PieceAudioMap = Record<PieceType, PieceAudioConfig>;
 
 /** Serializable audio settings (stored in localStorage) */
 export interface AudioSettingsData {
-  rootNote: string;
+  rootNote: RootNote;
   scaleId: string;
   themeId: string;
   hoverSoundEnabled: boolean;

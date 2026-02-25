@@ -76,7 +76,7 @@ export default function ChessTones() {
     hoverDebounceRef.current = setTimeout(() => {
       if (!audioRef.current?.isInitialized) return;
       const { file, rank } = parseSquare(sq);
-      const rootNote = settings.data.rootNote as RootNote;
+      const rootNote = settings.data.rootNote;
       const freq = squareToFreq(file, rank, rootNote, settings.scale);
       const pieceType = piece?.type ?? "p";
       audioRef.current.playPreview(freq, pieceType);
@@ -89,6 +89,15 @@ export default function ChessTones() {
       clearTimeout(hoverDebounceRef.current);
       hoverDebounceRef.current = null;
     }
+  }, []);
+
+  // Cleanup hover timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (hoverDebounceRef.current) {
+        clearTimeout(hoverDebounceRef.current);
+      }
+    };
   }, []);
 
   // ─── DERIVED STATE ────────────────────────────────────────────────
@@ -185,7 +194,7 @@ export default function ChessTones() {
           audioStarted={audioStarted}
           boardFlipped={boardFlipped}
           capturedPieces={game.capturedPieces}
-          rootNote={settings.data.rootNote as RootNote}
+          rootNote={settings.data.rootNote}
           scale={settings.scale}
           onSquareClick={game.handleSquareClick}
           onSquareHover={handleSquareHover}
