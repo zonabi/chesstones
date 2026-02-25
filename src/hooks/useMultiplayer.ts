@@ -55,23 +55,46 @@ export function useMultiplayer(): UseMultiplayerReturn {
   // ─── MESSAGE HANDLER ───────────────────────────────────
 
   const handleMessage = useCallback((msg: PeerMessage, _fromPeerId: string) => {
+    // Basic runtime validation to guard against malformed or malicious messages.
+    if (!msg || typeof msg !== "object") {
+      return;
+    }
+
+    const payload = (msg as any).payload;
+
     switch (msg.type) {
       case "move":
-        onRemoteMove.current?.(msg.payload as MovePayload);
+        if (payload && typeof payload === "object") {
+          onRemoteMove.current?.(payload as MovePayload);
+        }
         break;
       case "state-sync":
-        onStateSync.current?.(msg.payload as StateSyncPayload);
+        if (payload && typeof payload === "object") {
+          onStateSync.current?.(payload as StateSyncPayload);
+        }
         break;
       case "audio-settings":
-        onAudioSettingsSync.current?.(msg.payload as AudioSettingsPayload);
+        if (payload && typeof payload === "object") {
+          onAudioSettingsSync.current?.(payload as AudioSettingsPayload);
+        }
         break;
       case "game-reset":
         onGameReset.current?.();
         break;
       case "player-info": {
-        const info = msg.payload as { name: string; role: PlayerRole };
-        if (info.role === "guest") {
-          setOpponentName(info.name || "Opponent");
+        if (!payload || typeof payload !== "object") {
+          break;
+        }
+
+        const info = payload as { name?: unknown; role?: unknown };
+        const roleValue = typeof info.role === "string" ? (info.role as PlayerRole) : null;
+
+        if (roleValue === "guest") {
+          const nameValue =
+            typeof info.name === "string" && info.name.trim().length > 0
+              ? info.name
+              : "Opponent";
+          setOpponentName(nameValue);
         }
         break;
       }
