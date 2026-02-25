@@ -155,6 +155,65 @@ export default function ChessTones() {
         />
       </div>
 
+      {/* Descriptive blurb */}
+      <div style={{
+        maxWidth: 680,
+        marginTop: 36,
+        textAlign: "center",
+        padding: "28px 32px",
+        background: "rgba(20,20,32,0.6)",
+        border: "1px solid rgba(201,168,76,0.15)",
+        borderRadius: 12,
+        backdropFilter: "blur(8px)",
+      }}>
+        <p style={{
+          fontSize: 13,
+          letterSpacing: 3,
+          textTransform: "uppercase",
+          background: GOLD_GRADIENT,
+          WebkitBackgroundClip: "text",
+          WebkitTextFillColor: "transparent",
+          margin: "0 0 14px",
+          fontWeight: 400,
+        }}>
+          The Idea &amp; Structure of Sound
+        </p>
+        <p style={{
+          fontSize: 14,
+          lineHeight: 1.85,
+          color: "#aaa",
+          margin: "0 0 16px",
+          fontWeight: 300,
+        }}>
+          ChessTones maps the 8×8 board directly onto musical space. Each <em style={{ color: "#ccc" }}>file (a–h)</em> corresponds
+          to a scale note — C through C — and each <em style={{ color: "#ccc" }}>rank (1–8)</em> shifts the octave, so every
+          square on the board holds a unique pitch. Moving a piece plays a two-note phrase: the
+          square you leave, then the square you arrive at — a melodic interval born from the move itself.
+        </p>
+        <p style={{
+          fontSize: 14,
+          lineHeight: 1.85,
+          color: "#aaa",
+          margin: "0 0 16px",
+          fontWeight: 300,
+        }}>
+          Every piece type has its own synthesized voice. Pawns speak in pure sine waves. Knights carry
+          a warm triangle tone. Bishops ring with rich sawtooth harmonics. Rooks sound bold and square.
+          The Queen layers complexity; the King resonates with a subtle vibrato — regal, and exposed.
+        </p>
+        <p style={{
+          fontSize: 14,
+          lineHeight: 1.85,
+          color: "#aaa",
+          margin: 0,
+          fontWeight: 300,
+        }}>
+          Beneath the moves, an ambient score listens to the board's tension. As material shifts and kings
+          grow vulnerable, the harmony drifts from major to minor, the tempo quickens, and the texture
+          thickens — until checkmate resolves the drama in one final, descending cadence.
+        </p>
+      </div>
+
       {/* Promotion dialog */}
       {game.showPromotion && (
         <PromotionDialog onSelect={game.handlePromotion} />
