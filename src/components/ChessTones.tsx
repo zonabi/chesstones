@@ -91,6 +91,15 @@ export default function ChessTones() {
     }
   }, []);
 
+  // Cleanup hover timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (hoverDebounceRef.current) {
+        clearTimeout(hoverDebounceRef.current);
+      }
+    };
+  }, []);
+
   // ─── DERIVED STATE ────────────────────────────────────────────────
 
   const bgColor = useMemo(() => tensionColor(tension), [tension]);
