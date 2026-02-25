@@ -91,7 +91,10 @@ export function useMultiplayer(): UseMultiplayerReturn {
     });
 
     pm.onPeerDisconnect(() => {
+      // Update peer count and mark the session as disconnected so the game can react appropriately.
       setConnectedPeers(pm.connectedPeerCount);
+      setIsConnected(false);
+      setError("Peer disconnected");
     });
 
     pm.onError((err) => {
