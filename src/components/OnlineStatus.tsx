@@ -16,9 +16,34 @@ export function OnlineStatus({
   opponentName,
   onDisconnect,
 }: OnlineStatusProps) {
+  const fallbackCopyToClipboard = (text: string) => {
+    try {
+      const textArea = document.createElement("textarea");
+      textArea.value = text;
+      textArea.style.position = "fixed";
+      textArea.style.left = "-9999px";
+      textArea.style.top = "0";
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
+      document.execCommand("copy");
+      document.body.removeChild(textArea);
+    } catch (err) {
+      // As a last resort, log the failure; UI behavior remains unchanged.
+      console.error("Failed to copy link to clipboard using fallback.", err);
+    }
+  };
+
   const copyLink = () => {
     const url = `${window.location.origin}${window.location.pathname}#room=${roomCode}`;
-    navigator.clipboard.writeText(url);
+    if (navigator.clipboard && typeof navigator.clipboard.writeText === "function") {
+      navigator.clipboard.writeText(url).catch((err) => {
+        console.error("Failed to copy link to clipboard.", err);
+        fallbackCopyToClipboard(url);
+      });
+    } else {
+      fallbackCopyToClipboard(url);
+    }
   };
 
   const roleLabel = role === "host" ? "Host (White)" : role === "guest" ? "Guest (Black)" : "Spectator";
