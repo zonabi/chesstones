@@ -72,7 +72,7 @@ export function useChessGame(
   const [showPromotion, setShowPromotion] = useState<Move | null>(null);
 
   // Extract scale params for audio calls
-  const rootNote = (audioSettings?.data.rootNote ?? "C") as RootNote;
+  const rootNote: RootNote = audioSettings?.data.rootNote ?? "C";
   const scale = audioSettings?.scale;
   const clickSoundEnabled = audioSettings?.data.clickSoundEnabled ?? true;
 
