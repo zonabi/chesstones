@@ -3,3 +3,9 @@ dist/
 .env
 .DS_Store
 *.local
+
+# Vite temporary files
+vite.config.js.timestamp-*
+vite.config.ts.timestamp-*
+vite.config.mjs.timestamp-*
+vite.config.mts.timestamp-*

@@ -26,25 +26,24 @@ export default function ChessTones() {
 
   // ─── BOARD-REACTIVE AUDIO (syncs ambient to game tension) ─────────
 
-  const [tension, setTension] = useState(0);
+  // tension is derived state — computed from board, never stored separately
+  const tension = useMemo(() => getTension(game.board, game.turn), [game.board, game.turn]);
 
   useEffect(() => {
     if (!audioStarted || !audioRef.current) return;
 
     const mat = getMaterialBalance(game.board);
-    const t = getTension(game.board, game.turn);
     const pc = getPieceCount(game.board);
-    setTension(t);
-    audioRef.current.updateTension(t);
+    audioRef.current.updateTension(tension);
 
     const restartTimer = setTimeout(() => {
       if (audioRef.current?.isInitialized) {
-        audioRef.current.startAmbient(t, mat.balance, pc);
+        audioRef.current.startAmbient(tension, mat.balance, pc);
       }
     }, 500);
 
     return () => clearTimeout(restartTimer);
-  }, [game.board, game.turn, audioStarted, audioRef]);
+  }, [game.board, game.turn, tension, audioStarted, audioRef]);
 
   // ─── DERIVED STATE ────────────────────────────────────────────────
 

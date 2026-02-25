@@ -97,7 +97,7 @@ export function useReplay(
     if (idx < 0 || idx > replayMoves.length) return;
 
     let currentBoard: Board = createInitialBoard();
-    let currentCastling: CastlingRights = { wK: true, wQ: true, bK: true, bQ: true };
+    const currentCastling: CastlingRights = { wK: true, wQ: true, bK: true, bQ: true };
     let currentEP: Square | null = null;
     const notations: string[] = [];
     const caps: CapturedPieces = { w: [], b: [] };

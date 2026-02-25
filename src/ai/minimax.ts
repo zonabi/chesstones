@@ -51,7 +51,8 @@ function minimax(
     for (const move of moves) {
       const newBoard = makeMove(board, move);
       const newEP = computeEnPassantTarget(board, move);
-      const { score } = minimax(newBoard, depth - 1, alpha, beta, false, newEP, castling);
+      const newCastling = computeNextCastling(board, move, castling);
+      const { score } = minimax(newBoard, depth - 1, alpha, beta, false, newEP, newCastling);
       if (score > maxScore) {
         maxScore = score;
         bestMove = move;
@@ -65,7 +66,8 @@ function minimax(
     for (const move of moves) {
       const newBoard = makeMove(board, move);
       const newEP = computeEnPassantTarget(board, move);
-      const { score } = minimax(newBoard, depth - 1, alpha, beta, true, newEP, castling);
+      const newCastling = computeNextCastling(board, move, castling);
+      const { score } = minimax(newBoard, depth - 1, alpha, beta, true, newEP, newCastling);
       if (score < minScore) {
         minScore = score;
         bestMove = move;
@@ -89,6 +91,35 @@ function computeEnPassantTarget(board: Board, move: Move): Square | null {
     );
   }
   return null;
+}
+
+/**
+ * Derive updated castling rights after a move.
+ * King moves revoke both castling rights for that color.
+ * Rook moves from a corner revoke the corresponding right.
+ */
+function computeNextCastling(board: Board, move: Move, castling: CastlingRights): CastlingRights {
+  const piece = board[move.from];
+  if (!piece) return castling;
+
+  let next = castling;
+
+  if (piece.type === "k") {
+    next = {
+      ...next,
+      [`${piece.color}K`]: false,
+      [`${piece.color}Q`]: false,
+    } as CastlingRights;
+  }
+
+  if (piece.type === "r") {
+    if (move.from === "a1" && next.wQ) next = { ...next, wQ: false };
+    if (move.from === "h1" && next.wK) next = { ...next, wK: false };
+    if (move.from === "a8" && next.bQ) next = { ...next, bQ: false };
+    if (move.from === "h8" && next.bK) next = { ...next, bK: false };
+  }
+
+  return next;
 }
 
 /**
