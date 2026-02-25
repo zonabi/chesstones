@@ -72,9 +72,13 @@ export const ChessBoard: React.FC<ChessBoardProps> = ({
         setAnimPhase("start");
         setAnimating({ symbol, from, to });
 
+        // Store cleanup IDs
+        let rafId1: number | null = null;
+        let rafId2: number | null = null;
+
         // Trigger transition to destination on next frame
-        requestAnimationFrame(() => {
-          requestAnimationFrame(() => {
+        rafId1 = requestAnimationFrame(() => {
+          rafId2 = requestAnimationFrame(() => {
             setAnimPhase("end");
           });
         });
@@ -86,7 +90,11 @@ export const ChessBoard: React.FC<ChessBoardProps> = ({
         }, SLIDE_DURATION + 50);
 
         prevLastMove.current = lastMove;
-        return () => clearTimeout(timer);
+        return () => {
+          if (rafId1 !== null) cancelAnimationFrame(rafId1);
+          if (rafId2 !== null) cancelAnimationFrame(rafId2);
+          clearTimeout(timer);
+        };
       }
     }
     prevLastMove.current = lastMove;
