@@ -78,8 +78,9 @@ export const AudioSettingsPanel: React.FC<AudioSettingsPanelProps> = ({ audioSet
           {/* Row 1: Key + Scale */}
           <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
             <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
-              <label style={{ fontSize: 10, color: "#666", textTransform: "uppercase", letterSpacing: 1 }}>Key</label>
+              <label htmlFor="audio-settings-key" style={{ fontSize: 10, color: "#666", textTransform: "uppercase", letterSpacing: 1 }}>Key</label>
               <select
+                id="audio-settings-key"
                 value={settings.data.rootNote}
                 onChange={(e) => setRootNote(e.target.value as RootNote)}
                 style={{ ...selectStyle, minWidth: 60 }}
@@ -91,8 +92,9 @@ export const AudioSettingsPanel: React.FC<AudioSettingsPanelProps> = ({ audioSet
             </div>
 
             <div style={{ display: "flex", flexDirection: "column", gap: 3, flex: 1 }}>
-              <label style={{ fontSize: 10, color: "#666", textTransform: "uppercase", letterSpacing: 1 }}>Scale</label>
+              <label htmlFor="audio-settings-scale" style={{ fontSize: 10, color: "#666", textTransform: "uppercase", letterSpacing: 1 }}>Scale</label>
               <select
+                id="audio-settings-scale"
                 value={settings.data.scaleId}
                 onChange={(e) => setScale(e.target.value)}
                 style={selectStyle}
@@ -108,8 +110,9 @@ export const AudioSettingsPanel: React.FC<AudioSettingsPanelProps> = ({ audioSet
 
           {/* Row 2: Theme */}
           <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
-            <label style={{ fontSize: 10, color: "#666", textTransform: "uppercase", letterSpacing: 1 }}>Theme</label>
+            <label htmlFor="audio-settings-theme" style={{ fontSize: 10, color: "#666", textTransform: "uppercase", letterSpacing: 1 }}>Theme</label>
             <select
+              id="audio-settings-theme"
               value={settings.data.themeId}
               onChange={(e) => setTheme(e.target.value)}
               style={selectStyle}
