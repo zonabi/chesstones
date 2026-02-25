@@ -85,7 +85,7 @@ export default function ChessTones() {
         squarePulse: {},
       });
     };
-  }, [mp.role, mp, game.board, game.turn, game.castling, game.enPassant,
+  }, [mp.role, mp.sendStateSync, game.board, game.turn, game.castling, game.enPassant,
       game.lastMove, game.moveNotation, game.capturedPieces, game.gameStatus]);
 
   // Track last move notation length to detect new moves and broadcast them
