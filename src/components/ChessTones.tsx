@@ -4,7 +4,6 @@ import { getMaterialBalance, getTension, getPieceCount, parseSquare } from "@/en
 import { squareToFreq } from "@/constants";
 import { tensionColor, tabStyle, smallBtnStyle, GOLD_GRADIENT, GLOBAL_CSS, GOLD } from "@/styles/theme";
 import type { Piece } from "@/types";
-import type { RootNote } from "@/audio/scales";
 
 import { AudioOverlay } from "./AudioOverlay";
 import { AudioSettingsPanel } from "./AudioSettingsPanel";
