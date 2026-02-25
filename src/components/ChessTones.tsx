@@ -76,7 +76,7 @@ export default function ChessTones() {
     hoverDebounceRef.current = setTimeout(() => {
       if (!audioRef.current?.isInitialized) return;
       const { file, rank } = parseSquare(sq);
-      const rootNote = settings.data.rootNote as RootNote;
+      const rootNote = settings.data.rootNote;
       const freq = squareToFreq(file, rank, rootNote, settings.scale);
       const pieceType = piece?.type ?? "p";
       audioRef.current.playPreview(freq, pieceType);

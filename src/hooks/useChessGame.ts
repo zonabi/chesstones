@@ -5,7 +5,6 @@ import type {
 } from "@/types";
 import { AudioEngine } from "@/audio";
 import type { AudioSettings } from "./useAudioSettings";
-import type { RootNote } from "@/audio/scales";
 import {
   createInitialBoard, makeMove, parseSquare, sqStr,
   getLegalMoves, isInCheck,
@@ -72,7 +71,7 @@ export function useChessGame(
   const [showPromotion, setShowPromotion] = useState<Move | null>(null);
 
   // Extract scale params for audio calls
-  const rootNote = (audioSettings?.data.rootNote ?? "C") as RootNote;
+  const rootNote = audioSettings?.data.rootNote ?? "C";
   const scale = audioSettings?.scale;
   const clickSoundEnabled = audioSettings?.data.clickSoundEnabled ?? true;
 
