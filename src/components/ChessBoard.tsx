@@ -27,13 +27,16 @@ interface ChessBoardProps {
 /** Duration of the sliding animation in ms */
 const SLIDE_DURATION = 350;
 
+/** Size of a single board square in pixels */
+const SQUARE_SIZE = 60;
+
 /** Compute pixel position of a square on the board */
 function squareToPixel(sq: string, flipped: boolean): { x: number; y: number } {
   const file = sq[0];
   const rank = parseInt(sq[1]);
   const colIdx = flipped ? (7 - FILES.indexOf(file)) : FILES.indexOf(file);
   const rowIdx = flipped ? (rank - 1) : (8 - rank);
-  return { x: colIdx * 60, y: rowIdx * 60 };
+  return { x: colIdx * SQUARE_SIZE, y: rowIdx * SQUARE_SIZE };
 }
 
 /** The full chess board with captured pieces displayed above and below */
