@@ -55,11 +55,11 @@ describe("evaluateBoard", () => {
       g1: { type: "k", color: "w" },
       e8: { type: "k", color: "b" },
     };
-    const uncaStledBoard: Board = {
+    const uncastledBoard: Board = {
       e1: { type: "k", color: "w" },
       e8: { type: "k", color: "b" },
     };
-    expect(evaluateBoard(castledBoard)).toBeGreaterThan(evaluateBoard(uncaStledBoard));
+    expect(evaluateBoard(castledBoard)).toBeGreaterThan(evaluateBoard(uncastledBoard));
   });
 
   it("is symmetric: mirror position scores to zero", () => {
