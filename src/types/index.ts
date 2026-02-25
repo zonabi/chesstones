@@ -17,4 +17,4 @@ export type {
   CapturedPieces,
 } from "./chess";
 
-export type { PieceAudioConfig, PieceAudioMap } from "./audio";
+export type { PieceAudioConfig, PieceAudioMap, AudioSettingsData } from "./audio";

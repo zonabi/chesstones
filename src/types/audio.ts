@@ -12,3 +12,12 @@ export interface PieceAudioConfig {
 
 /** Map from piece type to its audio configuration */
 export type PieceAudioMap = Record<PieceType, PieceAudioConfig>;
+
+/** Serializable audio settings (stored in localStorage) */
+export interface AudioSettingsData {
+  rootNote: string;
+  scaleId: string;
+  themeId: string;
+  hoverSoundEnabled: boolean;
+  clickSoundEnabled: boolean;
+}
