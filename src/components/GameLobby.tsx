@@ -64,9 +64,16 @@ export function GameLobby({
     setIsLoading(false);
   };
 
-  const copyRoomLink = () => {
+  const copyRoomLink = async () => {
     const url = `${window.location.origin}${window.location.pathname}#room=${roomCode}`;
-    navigator.clipboard.writeText(url);
+    try {
+      await navigator.clipboard.writeText(url);
+      window.alert("Link copied to clipboard.");
+    } catch (err) {
+      // Provide basic feedback if clipboard access fails
+      console.error("Failed to copy room link to clipboard:", err);
+      window.alert("Failed to copy the link. Please copy it manually from the address bar.");
+    }
   };
 
   const startHostedGame = () => {
