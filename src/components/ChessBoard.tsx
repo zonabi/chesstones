@@ -68,25 +68,36 @@ export const ChessBoard: React.FC<ChessBoardProps> = ({
         const from = squareToPixel(lastMove.from, boardFlipped);
         const to = squareToPixel(lastMove.to, boardFlipped);
 
-        // Start animation at source position
-        setAnimPhase("start");
-        setAnimating({ symbol, from, to });
-
-        // Trigger transition to destination on next frame
+        // Schedule animation to start on next frame to avoid cascading renders
+        const timers: ReturnType<typeof setTimeout>[] = [];
+        
         requestAnimationFrame(() => {
+          // Start animation at source position
+          setAnimPhase("start");
+          setAnimating({ symbol, from, to });
+
+          // Trigger transition to destination on next frame
           requestAnimationFrame(() => {
-            setAnimPhase("end");
+            requestAnimationFrame(() => {
+              setAnimPhase("end");
+            });
           });
+
+          // Clear animation after transition completes
+          const timer = setTimeout(() => {
+            setAnimating(null);
+            setAnimPhase("start");
+          }, SLIDE_DURATION + 50);
+          
+          timers.push(timer);
         });
 
-        // Clear animation after transition completes
-        const timer = setTimeout(() => {
-          setAnimating(null);
-          setAnimPhase("start");
-        }, SLIDE_DURATION + 50);
-
         prevLastMove.current = lastMove;
-        return () => clearTimeout(timer);
+        return () => {
+          timers.forEach((t) => {
+            if (typeof t === "number") clearTimeout(t);
+          });
+        };
       }
     }
     prevLastMove.current = lastMove;
