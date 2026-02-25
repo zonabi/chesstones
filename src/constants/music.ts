@@ -91,10 +91,10 @@ export const DEFAULT_SCALE = SCALES[0];
  * Prefer using the theme system via AudioEngine.setTheme().
  */
 export const PIECE_AUDIO: PieceAudioMap = {
-  p: { wave: "sine",     attack: 0.01,  decay: 0.3, sustain: 0.1, release: 0.2, gain: 0.3 },
-  n: { wave: "triangle", attack: 0.02,  decay: 0.2, sustain: 0.3, release: 0.3, gain: 0.35 },
-  b: { wave: "sawtooth", attack: 0.01,  decay: 0.4, sustain: 0.2, release: 0.4, gain: 0.15 },
-  r: { wave: "square",   attack: 0.005, decay: 0.5, sustain: 0.4, release: 0.3, gain: 0.12 },
-  q: { wave: "sawtooth", attack: 0.02,  decay: 0.6, sustain: 0.5, release: 0.5, gain: 0.2 },
-  k: { wave: "sine",     attack: 0.05,  decay: 0.8, sustain: 0.3, release: 0.6, gain: 0.35 },
+  p: { wave: "sine",     attack: 0.05,  decay: 0.5, sustain: 0.25, release: 0.5, gain: 0.28 },
+  n: { wave: "triangle", attack: 0.06,  decay: 0.4, sustain: 0.4,  release: 0.6, gain: 0.3 },
+  b: { wave: "sawtooth", attack: 0.05,  decay: 0.6, sustain: 0.3,  release: 0.7, gain: 0.12 },
+  r: { wave: "square",   attack: 0.03,  decay: 0.7, sustain: 0.5,  release: 0.6, gain: 0.1 },
+  q: { wave: "sawtooth", attack: 0.06,  decay: 0.8, sustain: 0.6,  release: 0.8, gain: 0.18 },
+  k: { wave: "sine",     attack: 0.1,   decay: 1.0, sustain: 0.4,  release: 0.9, gain: 0.3 },
 };

@@ -82,7 +82,7 @@ export const BoardSquare: React.FC<BoardSquareProps> = React.memo(({
         cursor: mode === "play" ? "pointer" : "default",
         position: "relative",
         transition: "background 0.3s ease",
-        animation: pulse ? "pulse 0.6s ease" : undefined,
+        animation: pulse ? "pulse 0.9s ease" : undefined,
       }}
     >
       {/* Legal move indicator */}
