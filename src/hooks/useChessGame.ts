@@ -3,6 +3,7 @@ import type {
   Board, CastlingRights, CapturedPieces, Color,
   GameMode, GameStatus, Move, PieceType, PulseType, Square,
 } from "@/types";
+import type { RootNote } from "@/audio/scales";
 import { AudioEngine } from "@/audio";
 import type { AudioSettings } from "./useAudioSettings";
 import {
@@ -83,7 +84,7 @@ export function useChessGame(
   }
 
   // Extract scale params for audio calls
-  const rootNote: RootNote = audioSettings?.data.rootNote ?? "C";
+  const rootNote = getRootNoteFromSettings(audioSettings);
   const scale = audioSettings?.scale;
   const clickSoundEnabled = audioSettings?.data.clickSoundEnabled ?? true;
 
