@@ -18,3 +18,14 @@ export type {
 } from "./chess";
 
 export type { PieceAudioConfig, PieceAudioMap, AudioSettingsData } from "./audio";
+
+export type {
+  PlayerRole,
+  MessageType,
+  PeerMessage,
+  MovePayload,
+  StateSyncPayload,
+  AudioSettingsPayload,
+  PlayerInfoPayload,
+  OnlineState,
+} from "./multiplayer";
