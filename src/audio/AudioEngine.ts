@@ -247,7 +247,7 @@ export class AudioEngine {
 
   /** Resonant bell-like minor chord for a capture */
   private playCaptureSound(baseFreq: number): void {
-    if (!this.ctx || !this.masterGain || !this.reverb) return;
+    if (!this.ctx || !this.dryGain || !this.reverb) return;
 
     const t = this.ctx.currentTime;
 
@@ -267,7 +267,7 @@ export class AudioEngine {
       env.gain.exponentialRampToValueAtTime(0.001, t + delay + 1.2);
 
       osc.connect(env);
-      env.connect(this.masterGain!);
+      env.connect(this.dryGain!);
       env.connect(this.reverb!);
 
       osc.start(t + delay);
@@ -283,15 +283,15 @@ export class AudioEngine {
     subEnv.gain.linearRampToValueAtTime(0.06, t + 0.15);
     subEnv.gain.exponentialRampToValueAtTime(0.001, t + 1.0);
     sub.connect(subEnv);
-    subEnv.connect(this.masterGain);
-    subEnv.connect(this.reverb);
+    subEnv.connect(this.dryGain!);
+    subEnv.connect(this.reverb!);
     sub.start(t);
     sub.stop(t + 1.2);
   }
 
   /** Perfect fifth chord resolution for castling */
   private playCastlingSound(baseFreq: number): void {
-    if (!this.ctx || !this.masterGain || !this.reverb) return;
+    if (!this.ctx || !this.dryGain || !this.reverb) return;
 
     const t = this.ctx.currentTime;
     [1, 1.5, 2].forEach((ratio, i) => {
@@ -303,7 +303,7 @@ export class AudioEngine {
       env.gain.linearRampToValueAtTime(0.15, t + i * 0.1 + 0.05);
       env.gain.linearRampToValueAtTime(0, t + i * 0.1 + 0.6);
       osc.connect(env);
-      env.connect(this.masterGain!);
+      env.connect(this.dryGain!);
       env.connect(this.reverb!);
       osc.start(t + i * 0.1);
       osc.stop(t + i * 0.1 + 0.7);
@@ -312,7 +312,7 @@ export class AudioEngine {
 
   /** Tritone dissonance for check */
   private playCheckSound(baseFreq: number): void {
-    if (!this.ctx || !this.masterGain) return;
+    if (!this.ctx || !this.dryGain || !this.reverb) return;
 
     const t = this.ctx.currentTime;
     [1, Math.sqrt(2)].forEach((ratio) => {
@@ -323,7 +323,8 @@ export class AudioEngine {
       env.gain.setValueAtTime(0.15, t);
       env.gain.linearRampToValueAtTime(0, t + 0.4);
       osc.connect(env);
-      env.connect(this.masterGain!);
+      env.connect(this.dryGain!);
+      env.connect(this.reverb!);
       osc.start(t);
       osc.stop(t + 0.5);
     });
@@ -331,7 +332,7 @@ export class AudioEngine {
 
   /** Dramatic descending cadence for checkmate */
   playCheckmateSound(): void {
-    if (!this.ctx || !this.masterGain || !this.reverb) return;
+    if (!this.ctx || !this.dryGain || !this.reverb) return;
 
     const t = this.ctx.currentTime;
     const notes = [523.25, 493.88, 440, 392, 349.23, 329.63, 293.66, 261.63];
@@ -345,7 +346,7 @@ export class AudioEngine {
       env.gain.linearRampToValueAtTime(0.05, t + i * 0.15 + 0.3);
       env.gain.linearRampToValueAtTime(0, t + (i + 1) * 0.15 + 0.5);
       osc.connect(env);
-      env.connect(this.masterGain!);
+      env.connect(this.dryGain!);
       env.connect(this.reverb!);
       osc.start(t + i * 0.15);
       osc.stop(t + (i + 1) * 0.15 + 0.6);
