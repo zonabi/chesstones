@@ -125,7 +125,7 @@ describe("BoardSquare — color (light/dark)", () => {
     const { container } = render(
       <BoardSquare {...baseProps} sq="a1" file="a" rank={1} />
     );
-    // Just verify it renders (we can't easily test computed color in jsdom)
+    // Just verify it renders (we can't easily test computed color in happy-dom)
     expect(container.firstChild).toBeTruthy();
   });
 });
