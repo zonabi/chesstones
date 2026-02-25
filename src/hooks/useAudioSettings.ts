@@ -15,25 +15,21 @@ const DEFAULT_SETTINGS: AudioSettingsData = {
   clickSoundEnabled: true,
 };
 
+function isValidRootNote(value: unknown): value is RootNote {
+  return typeof value === "string" && ROOT_NOTES.includes(value as RootNote);
+}
+
 function loadSettings(): AudioSettingsData {
   try {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) {
       const parsed = JSON.parse(saved) as Partial<AudioSettingsData>;
-      const settings = { ...DEFAULT_SETTINGS, ...parsed };
-      
-      // Validate loaded values and fallback to defaults if invalid
-      if (parsed.rootNote && !ROOT_NOTES.includes(parsed.rootNote as RootNote)) {
-        settings.rootNote = DEFAULT_SETTINGS.rootNote;
+      const merged = { ...DEFAULT_SETTINGS, ...parsed };
+      // Validate rootNote from localStorage
+      if (!isValidRootNote(merged.rootNote)) {
+        merged.rootNote = DEFAULT_SETTINGS.rootNote;
       }
-      if (parsed.scaleId && !SCALES.find(s => s.id === parsed.scaleId)) {
-        settings.scaleId = DEFAULT_SETTINGS.scaleId;
-      }
-      if (parsed.themeId && !THEMES.find(t => t.id === parsed.themeId)) {
-        settings.themeId = DEFAULT_SETTINGS.themeId;
-      }
-      
-      return settings;
+      return merged;
     }
   } catch {
     // ignore corrupt localStorage

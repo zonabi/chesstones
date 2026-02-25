@@ -194,7 +194,7 @@ export default function ChessTones() {
           audioStarted={audioStarted}
           boardFlipped={boardFlipped}
           capturedPieces={game.capturedPieces}
-          rootNote={settings.data.rootNote as RootNote}
+          rootNote={settings.data.rootNote}
           scale={settings.scale}
           onSquareClick={game.handleSquareClick}
           onSquareHover={handleSquareHover}
