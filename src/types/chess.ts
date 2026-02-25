@@ -50,7 +50,7 @@ export interface MaterialBalance {
 export type GameStatus = "playing" | "check" | "checkmate" | "stalemate";
 
 /** Game mode */
-export type GameMode = "play" | "replay";
+export type GameMode = "play" | "replay" | "local" | "online";
 
 /** Parsed square coordinates */
 export interface SquareCoords {

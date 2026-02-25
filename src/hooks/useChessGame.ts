@@ -4,6 +4,7 @@ import type {
   GameMode, GameStatus, Move, PieceType, PulseType, Square,
 } from "@/types";
 import { AudioEngine } from "@/audio";
+import type { RootNote } from "@/audio";
 import type { AudioSettings } from "./useAudioSettings";
 import {
   createInitialBoard, makeMove, parseSquare, sqStr,
@@ -29,6 +30,7 @@ interface UseChessGameReturn {
   enPassant: Square | null;
   handleSquareClick: (sq: Square) => void;
   handlePromotion: (promoType: PieceType) => void;
+  executeMove: (move: Move) => void;
   newGame: () => void;
   setMode: (mode: GameMode) => void;
   /** Reset the game state to match replay mode entry */
@@ -53,7 +55,8 @@ interface UseChessGameReturn {
 export function useChessGame(
   audioRef: React.RefObject<AudioEngine | null>,
   _audioStarted: boolean,
-  audioSettings?: AudioSettings
+  audioSettings?: AudioSettings,
+  onlineColor?: Color | null,
 ): UseChessGameReturn {
   const [board, setBoard] = useState<Board>(createInitialBoard());
   const [turn, setTurn] = useState<Color>("w");
@@ -69,18 +72,6 @@ export function useChessGame(
   const [aiThinking, setAiThinking] = useState(false);
   const [squarePulse, setSquarePulse] = useState<Record<string, PulseType>>({});
   const [showPromotion, setShowPromotion] = useState<Move | null>(null);
-
-  const DEFAULT_ROOT_NOTE: RootNote = "C" as RootNote;
-
-  function getRootNoteFromSettings(settings?: AudioSettings): RootNote {
-    const candidate = settings?.data.rootNote;
-
-    if (typeof candidate === "string" && candidate.length > 0) {
-      return candidate as RootNote;
-    }
-
-    return DEFAULT_ROOT_NOTE;
-  }
 
   // Extract scale params for audio calls
   const rootNote: RootNote = audioSettings?.data.rootNote ?? "C";
@@ -207,7 +198,10 @@ export function useChessGame(
 
   const handleSquareClick = useCallback((sq: Square) => {
     if (mode === "replay" || gameStatus === "checkmate" || gameStatus === "stalemate" || aiThinking) return;
-    if (turn !== "w") return;
+    // In "play" (vs AI) mode, only white can move. In "local" both colors can.
+    // In "online" mode, the multiplayer hook controls which color can move (via onlineColor).
+    if (mode === "play" && turn !== "w") return;
+    if (mode === "online" && onlineColor && turn !== onlineColor) return;
 
     if (selected) {
       const move = legalSquares.find((m) => m.to === sq);
@@ -245,7 +239,7 @@ export function useChessGame(
       setSelected(null);
       setLegalSquares([]);
     }
-  }, [selected, legalSquares, board, turn, enPassant, castling, mode, gameStatus, aiThinking, executeMove, audioRef, rootNote, scale, clickSoundEnabled]);
+  }, [selected, legalSquares, board, turn, enPassant, castling, mode, gameStatus, aiThinking, executeMove, audioRef, rootNote, scale, clickSoundEnabled, onlineColor]);
 
   // ─── PROMOTION ────────────────────────────────────────
 
@@ -332,6 +326,6 @@ export function useChessGame(
     capturedPieces, moveNotation, aiThinking, squarePulse, showPromotion,
     castling, enPassant,
     handleSquareClick, handlePromotion, newGame, setMode,
-    enterReplayMode, restoreState,
+    enterReplayMode, restoreState, executeMove,
   };
 }
