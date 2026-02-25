@@ -1,5 +1,6 @@
 import React from "react";
-import type { Board, CapturedPieces, Color, GameMode, Move, PulseType, Square } from "@/types";
+import type { Board, CapturedPieces, Color, GameMode, Move, Piece, PulseType, Square } from "@/types";
+import type { RootNote, ScaleDefinition } from "@/audio/scales";
 import { FILES, RANKS, PIECE_SYMBOLS, PIECE_VALUES } from "@/constants";
 import { sqStr } from "@/engine";
 import { BoardSquare } from "./BoardSquare";
@@ -16,14 +17,19 @@ interface ChessBoardProps {
   audioStarted: boolean;
   boardFlipped: boolean;
   capturedPieces: CapturedPieces;
+  rootNote?: RootNote;
+  scale?: ScaleDefinition;
   onSquareClick: (sq: Square) => void;
+  onSquareHover?: (sq: string, piece: Piece | undefined) => void;
+  onSquareHoverEnd?: (sq: string) => void;
 }
 
 /** The full chess board with captured pieces displayed above and below */
 export const ChessBoard: React.FC<ChessBoardProps> = ({
   board, turn, selected, legalSquares, lastMove, squarePulse,
   tension, mode, audioStarted, boardFlipped, capturedPieces,
-  onSquareClick,
+  rootNote, scale,
+  onSquareClick, onSquareHover, onSquareHoverEnd,
 }) => {
   const ranks = boardFlipped ? [...RANKS] : [...RANKS].reverse();
   const files = boardFlipped ? [...FILES].reverse() : [...FILES];
@@ -77,7 +83,11 @@ export const ChessBoard: React.FC<ChessBoardProps> = ({
                 mode={mode}
                 audioStarted={audioStarted}
                 boardFlipped={boardFlipped}
+                rootNote={rootNote}
+                scale={scale}
                 onClick={() => onSquareClick(sq)}
+                onHover={onSquareHover}
+                onHoverEnd={onSquareHoverEnd}
               />
             );
           })

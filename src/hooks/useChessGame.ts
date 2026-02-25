@@ -4,6 +4,8 @@ import type {
   GameMode, GameStatus, Move, PieceType, PulseType, Square,
 } from "@/types";
 import { AudioEngine } from "@/audio";
+import type { AudioSettings } from "./useAudioSettings";
+import type { RootNote } from "@/audio/scales";
 import {
   createInitialBoard, makeMove, parseSquare, sqStr,
   getLegalMoves, isInCheck,
@@ -51,7 +53,8 @@ interface UseChessGameReturn {
  */
 export function useChessGame(
   audioRef: React.RefObject<AudioEngine | null>,
-  _audioStarted: boolean
+  _audioStarted: boolean,
+  audioSettings?: AudioSettings
 ): UseChessGameReturn {
   const [board, setBoard] = useState<Board>(createInitialBoard());
   const [turn, setTurn] = useState<Color>("w");
@@ -67,6 +70,11 @@ export function useChessGame(
   const [aiThinking, setAiThinking] = useState(false);
   const [squarePulse, setSquarePulse] = useState<Record<string, PulseType>>({});
   const [showPromotion, setShowPromotion] = useState<Move | null>(null);
+
+  // Extract scale params for audio calls
+  const rootNote = (audioSettings?.data.rootNote ?? "C") as RootNote;
+  const scale = audioSettings?.scale;
+  const clickSoundEnabled = audioSettings?.data.clickSoundEnabled ?? true;
 
   // ─── SAN NOTATION ─────────────────────────────────────
 
@@ -107,9 +115,13 @@ export function useChessGame(
     const enemy: Color = piece.color === "w" ? "b" : "w";
     const inCheck = isInCheck(newBoard, enemy);
 
-    // Play sounds
+    // Play sounds — now with scale params
     if (audioRef.current?.isInitialized) {
-      audioRef.current.playMove(move.from, move.to, piece.type, isCapture, !!move.castling, inCheck);
+      audioRef.current.playMove(
+        move.from, move.to, piece.type,
+        isCapture, !!move.castling, inCheck,
+        rootNote, scale
+      );
     }
 
     // Update castling rights
@@ -178,7 +190,7 @@ export function useChessGame(
     }
 
     setTurn(enemy);
-  }, [board, castling, audioRef]);
+  }, [board, castling, audioRef, rootNote, scale]);
 
   // ─── SQUARE CLICK ─────────────────────────────────────
 
@@ -204,17 +216,25 @@ export function useChessGame(
       const moves = getLegalMoves(board, turn, enPassant, castling).filter((m) => m.from === sq);
       setLegalSquares(moves);
 
-      // Preview tone
+      // Preview tone for own piece selection (always plays)
       if (audioRef.current?.isInitialized) {
         const { file, rank } = parseSquare(sq);
-        const freq = squareToFreq(file, rank);
+        const freq = squareToFreq(file, rank, rootNote, scale);
         audioRef.current.playNote(freq, piece.type, 0.1, 0);
       }
     } else {
+      // Click sound on any square (enemy or empty) — if enabled
+      if (clickSoundEnabled && audioRef.current?.isInitialized) {
+        const { file, rank } = parseSquare(sq);
+        const freq = squareToFreq(file, rank, rootNote, scale);
+        const pieceType = piece?.type ?? "p";
+        audioRef.current.playNote(freq, pieceType, 0.15, 0);
+      }
+
       setSelected(null);
       setLegalSquares([]);
     }
-  }, [selected, legalSquares, board, turn, enPassant, castling, mode, gameStatus, aiThinking, executeMove, audioRef]);
+  }, [selected, legalSquares, board, turn, enPassant, castling, mode, gameStatus, aiThinking, executeMove, audioRef, rootNote, scale, clickSoundEnabled]);
 
   // ─── PROMOTION ────────────────────────────────────────
 

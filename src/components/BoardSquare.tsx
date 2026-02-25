@@ -1,5 +1,6 @@
 import React from "react";
 import type { Board, Color, GameMode, Piece, PulseType } from "@/types";
+import type { RootNote, ScaleDefinition } from "@/audio/scales";
 import { FILES, PIECE_SYMBOLS } from "@/constants";
 import { squareToNote } from "@/constants";
 import { isSquareAttacked } from "@/engine";
@@ -20,7 +21,11 @@ interface BoardSquareProps {
   mode: GameMode;
   audioStarted: boolean;
   boardFlipped: boolean;
+  rootNote?: RootNote;
+  scale?: ScaleDefinition;
   onClick: () => void;
+  onHover?: (sq: string, piece: Piece | undefined) => void;
+  onHoverEnd?: (sq: string) => void;
 }
 
 /** A single square on the chess board with dynamic coloring and piece display */
@@ -28,7 +33,8 @@ export const BoardSquare: React.FC<BoardSquareProps> = React.memo(({
   sq, file, rank, piece, board,
   isSelected, isLegalTarget, isLastMoveSquare, isLastMoveDest,
   pulse, tension, turn, mode, audioStarted, boardFlipped,
-  onClick,
+  rootNote, scale,
+  onClick, onHover, onHoverEnd,
 }) => {
   const isLight = (FILES.indexOf(file) + rank) % 2 === 1;
 
@@ -65,15 +71,20 @@ export const BoardSquare: React.FC<BoardSquareProps> = React.memo(({
   const showRankLabel = file === (boardFlipped ? "h" : "a");
 
   return (
-    <div onClick={onClick} style={{
-      width: 60, height: 60,
-      display: "flex", alignItems: "center", justifyContent: "center",
-      background: bgColor,
-      cursor: mode === "play" ? "pointer" : "default",
-      position: "relative",
-      transition: "background 0.3s ease",
-      animation: pulse ? "pulse 0.6s ease" : undefined,
-    }}>
+    <div
+      onClick={onClick}
+      onMouseEnter={() => onHover?.(sq, piece)}
+      onMouseLeave={() => onHoverEnd?.(sq)}
+      style={{
+        width: 60, height: 60,
+        display: "flex", alignItems: "center", justifyContent: "center",
+        background: bgColor,
+        cursor: mode === "play" ? "pointer" : "default",
+        position: "relative",
+        transition: "background 0.3s ease",
+        animation: pulse ? "pulse 0.6s ease" : undefined,
+      }}
+    >
       {/* Legal move indicator */}
       {isLegalTarget && (
         <div style={{
@@ -121,7 +132,7 @@ export const BoardSquare: React.FC<BoardSquareProps> = React.memo(({
           position: "absolute", top: 1, right: 2, fontSize: 8,
           color: "#c9a84c", opacity: 0.7, fontFamily: "monospace",
         }}>
-          {squareToNote(file, rank)}
+          {squareToNote(file, rank, rootNote, scale)}
         </span>
       )}
     </div>

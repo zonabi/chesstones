@@ -1,9 +1,13 @@
-import { useEffect, useMemo, useState } from "react";
-import { useAudio, useChessGame, useReplay } from "@/hooks";
-import { getMaterialBalance, getTension, getPieceCount } from "@/engine";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useAudio, useAudioSettings, useChessGame, useReplay } from "@/hooks";
+import { getMaterialBalance, getTension, getPieceCount, parseSquare } from "@/engine";
+import { squareToFreq } from "@/constants";
 import { tensionColor, tabStyle, smallBtnStyle, GOLD_GRADIENT, GLOBAL_CSS, GOLD } from "@/styles/theme";
+import type { Piece } from "@/types";
+import type { RootNote } from "@/audio/scales";
 
 import { AudioOverlay } from "./AudioOverlay";
+import { AudioSettingsPanel } from "./AudioSettingsPanel";
 import { ChessBoard } from "./ChessBoard";
 import { StatusBar } from "./StatusBar";
 import { SidePanel } from "./SidePanel";
@@ -19,10 +23,20 @@ export default function ChessTones() {
   // ─── HOOKS (order matters: audio first, then game uses audioRef) ───
 
   const { audioRef, audioStarted, volume, startAudio, setVolume } = useAudio();
+  const audioSettingsHook = useAudioSettings();
+  const { settings } = audioSettingsHook;
 
-  const game = useChessGame(audioRef, audioStarted);
+  const game = useChessGame(audioRef, audioStarted, settings);
 
   const replay = useReplay(audioRef, game.enterReplayMode, game.restoreState);
+
+  // ─── THEME SYNC (push theme to AudioEngine when it changes) ────────
+
+  useEffect(() => {
+    if (audioRef.current?.isInitialized) {
+      audioRef.current.setTheme(settings.theme);
+    }
+  }, [settings.theme, audioRef]);
 
   // ─── BOARD-REACTIVE AUDIO (syncs ambient to game tension) ─────────
 
@@ -44,6 +58,38 @@ export default function ChessTones() {
 
     return () => clearTimeout(restartTimer);
   }, [game.board, game.turn, tension, audioStarted, audioRef]);
+
+  // ─── HOVER SOUND HANDLER (with debounce) ──────────────────────────
+
+  const lastHoveredSq = useRef<string | null>(null);
+  const hoverDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const handleSquareHover = useCallback((sq: string, piece: Piece | undefined) => {
+    if (!audioStarted || !settings.data.hoverSoundEnabled) return;
+    if (sq === lastHoveredSq.current) return;
+
+    lastHoveredSq.current = sq;
+
+    // Debounce: clear any pending hover sound
+    if (hoverDebounceRef.current) clearTimeout(hoverDebounceRef.current);
+
+    hoverDebounceRef.current = setTimeout(() => {
+      if (!audioRef.current?.isInitialized) return;
+      const { file, rank } = parseSquare(sq);
+      const rootNote = settings.data.rootNote as RootNote;
+      const freq = squareToFreq(file, rank, rootNote, settings.scale);
+      const pieceType = piece?.type ?? "p";
+      audioRef.current.playPreview(freq, pieceType);
+    }, 40);
+  }, [audioStarted, settings.data.hoverSoundEnabled, settings.data.rootNote, settings.scale, audioRef]);
+
+  const handleSquareHoverEnd = useCallback((_sq: string) => {
+    lastHoveredSq.current = null;
+    if (hoverDebounceRef.current) {
+      clearTimeout(hoverDebounceRef.current);
+      hoverDebounceRef.current = null;
+    }
+  }, []);
 
   // ─── DERIVED STATE ────────────────────────────────────────────────
 
@@ -108,6 +154,7 @@ export default function ChessTones() {
             style={{ width: 80, accentColor: GOLD }}
           />
         </div>
+        <AudioSettingsPanel audioSettings={audioSettingsHook} />
       </div>
 
       {/* Status bar */}
@@ -138,7 +185,11 @@ export default function ChessTones() {
           audioStarted={audioStarted}
           boardFlipped={boardFlipped}
           capturedPieces={game.capturedPieces}
+          rootNote={settings.data.rootNote as RootNote}
+          scale={settings.scale}
           onSquareClick={game.handleSquareClick}
+          onSquareHover={handleSquareHover}
+          onSquareHoverEnd={handleSquareHoverEnd}
         />
 
         <SidePanel
