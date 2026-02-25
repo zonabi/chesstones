@@ -71,8 +71,20 @@ export function useChessGame(
   const [squarePulse, setSquarePulse] = useState<Record<string, PulseType>>({});
   const [showPromotion, setShowPromotion] = useState<Move | null>(null);
 
+  const DEFAULT_ROOT_NOTE: RootNote = "C" as RootNote;
+
+  function getRootNoteFromSettings(settings?: AudioSettings): RootNote {
+    const candidate = settings?.data.rootNote;
+
+    if (typeof candidate === "string" && candidate.length > 0) {
+      return candidate as RootNote;
+    }
+
+    return DEFAULT_ROOT_NOTE;
+  }
+
   // Extract scale params for audio calls
-  const rootNote = (audioSettings?.data.rootNote ?? "C") as RootNote;
+  const rootNote = getRootNoteFromSettings(audioSettings);
   const scale = audioSettings?.scale;
   const clickSoundEnabled = audioSettings?.data.clickSoundEnabled ?? true;
 
