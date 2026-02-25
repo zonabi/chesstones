@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import type { AudioSettingsData } from "@/types";
 import type { RootNote } from "@/audio/scales";
 import type { InstrumentTheme } from "@/audio/themes";
@@ -51,9 +51,14 @@ export interface UseAudioSettingsReturn {
  */
 export function useAudioSettings(): UseAudioSettingsReturn {
   const [data, setData] = useState<AudioSettingsData>(loadSettings);
+  const hasMounted = useRef(false);
 
-  // Persist on change
+  // Persist on change (skip initial mount to avoid redundant write)
   useEffect(() => {
+    if (!hasMounted.current) {
+      hasMounted.current = true;
+      return;
+    }
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
   }, [data]);
 
