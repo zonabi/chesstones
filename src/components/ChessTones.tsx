@@ -120,7 +120,7 @@ export default function ChessTones() {
     mp.disconnect();
     setShowLobby(true);
     game.newGame();
-  }, [mp, game]);
+  }, [mp.disconnect, game.newGame]);
 
   // Check URL hash for room code on mount
   useEffect(() => {
