@@ -116,7 +116,7 @@ export const AudioSettingsPanel: React.FC<AudioSettingsPanelProps> = ({ audioSet
             >
               {themes.map((t) => (
                 <option key={t.id} value={t.id} title={t.description}>
-                  {t.name} — {t.description}
+                  {t.name}
                 </option>
               ))}
             </select>
