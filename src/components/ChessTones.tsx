@@ -149,8 +149,14 @@ export default function ChessTones() {
         themeId: settings.data.themeId,
       });
     }
-  }, [settings.data.rootNote, settings.data.scaleId, settings.data.themeId,
-      game.mode, mp]);
+  }, [
+    settings.data.rootNote,
+    settings.data.scaleId,
+    settings.data.themeId,
+    game.mode,
+    mp.isConnected,
+    mp.role,
+  ]);
 
   // ─── BOARD-REACTIVE AUDIO (syncs ambient to game tension) ─────────
 
