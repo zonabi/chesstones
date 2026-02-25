@@ -19,7 +19,8 @@ function isValidRootNote(value: unknown): value is RootNote {
   return typeof value === "string" && ROOT_NOTES.includes(value as RootNote);
 }
 
-function loadSettings(): AudioSettingsData {
+function loadSettings(): { data: AudioSettingsData; didSanitize: boolean } {
+  let didSanitize = false;
   try {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) {
@@ -28,13 +29,15 @@ function loadSettings(): AudioSettingsData {
       // Validate rootNote from localStorage
       if (!isValidRootNote(merged.rootNote)) {
         merged.rootNote = DEFAULT_SETTINGS.rootNote;
+        didSanitize = true;
       }
-      return merged;
+      return { data: merged, didSanitize };
     }
   } catch {
     // ignore corrupt localStorage
+    didSanitize = true;
   }
-  return { ...DEFAULT_SETTINGS };
+  return { data: { ...DEFAULT_SETTINGS }, didSanitize };
 }
 
 export interface AudioSettings {
@@ -59,13 +62,24 @@ export interface UseAudioSettingsReturn {
  * Provides resolved scale/theme objects alongside the raw settings data.
  */
 export function useAudioSettings(): UseAudioSettingsReturn {
-  const [data, setData] = useState<AudioSettingsData>(loadSettings);
+  const [data, setData] = useState<AudioSettingsData>(() => loadSettings().data);
   const hasMounted = useRef(false);
+  const didSanitize = useRef(false);
 
-  // Persist on change (skip initial mount to avoid redundant write)
+  // Store whether initial load required sanitization
+  useEffect(() => {
+    const result = loadSettings();
+    didSanitize.current = result.didSanitize;
+  }, []);
+
+  // Persist on change, or on mount if initial load sanitized data
   useEffect(() => {
     if (!hasMounted.current) {
       hasMounted.current = true;
+      // Persist if we sanitized invalid data on load
+      if (didSanitize.current) {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+      }
       return;
     }
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
