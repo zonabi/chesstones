@@ -37,48 +37,48 @@ export interface InstrumentTheme {
 // ─── BUILT-IN THEMES ─────────────────────────────────────
 
 const CLASSIC_PIECES: PieceAudioMap = {
-  p: { wave: "sine",     attack: 0.01,  decay: 0.3, sustain: 0.1, release: 0.2, gain: 0.3 },
-  n: { wave: "triangle", attack: 0.02,  decay: 0.2, sustain: 0.3, release: 0.3, gain: 0.35 },
-  b: { wave: "sawtooth", attack: 0.01,  decay: 0.4, sustain: 0.2, release: 0.4, gain: 0.15 },
-  r: { wave: "square",   attack: 0.005, decay: 0.5, sustain: 0.4, release: 0.3, gain: 0.12 },
-  q: { wave: "sawtooth", attack: 0.02,  decay: 0.6, sustain: 0.5, release: 0.5, gain: 0.2 },
-  k: { wave: "sine",     attack: 0.05,  decay: 0.8, sustain: 0.3, release: 0.6, gain: 0.35 },
+  p: { wave: "sine",     attack: 0.05,  decay: 0.5, sustain: 0.25, release: 0.5, gain: 0.28 },
+  n: { wave: "triangle", attack: 0.06,  decay: 0.4, sustain: 0.4,  release: 0.6, gain: 0.3 },
+  b: { wave: "sawtooth", attack: 0.05,  decay: 0.6, sustain: 0.3,  release: 0.7, gain: 0.12 },
+  r: { wave: "square",   attack: 0.03,  decay: 0.7, sustain: 0.5,  release: 0.6, gain: 0.1 },
+  q: { wave: "sawtooth", attack: 0.06,  decay: 0.8, sustain: 0.6,  release: 0.8, gain: 0.18 },
+  k: { wave: "sine",     attack: 0.1,   decay: 1.0, sustain: 0.4,  release: 0.9, gain: 0.3 },
 };
 
 const ORCHESTRAL_PIECES: PieceAudioMap = {
-  p: { wave: "sine",     attack: 0.005, decay: 0.15, sustain: 0.05, release: 0.1,  gain: 0.25 }, // pizzicato
-  n: { wave: "triangle", attack: 0.08,  decay: 0.4,  sustain: 0.5,  release: 0.5,  gain: 0.3 },  // french horn
-  b: { wave: "sawtooth", attack: 0.1,   decay: 0.6,  sustain: 0.6,  release: 0.7,  gain: 0.12 }, // cello
-  r: { wave: "sine",     attack: 0.005, decay: 0.8,  sustain: 0.2,  release: 0.4,  gain: 0.3 },  // timpani
-  q: { wave: "sawtooth", attack: 0.12,  decay: 0.7,  sustain: 0.7,  release: 0.8,  gain: 0.15 }, // full strings
-  k: { wave: "sine",     attack: 0.08,  decay: 1.0,  sustain: 0.5,  release: 0.9,  gain: 0.3 },  // organ
+  p: { wave: "sine",     attack: 0.03,  decay: 0.3,  sustain: 0.15, release: 0.3,  gain: 0.23 }, // pizzicato
+  n: { wave: "triangle", attack: 0.12,  decay: 0.6,  sustain: 0.55, release: 0.8,  gain: 0.25 }, // french horn
+  b: { wave: "sawtooth", attack: 0.15,  decay: 0.8,  sustain: 0.6,  release: 1.0,  gain: 0.1 },  // cello
+  r: { wave: "sine",     attack: 0.03,  decay: 1.0,  sustain: 0.3,  release: 0.7,  gain: 0.25 }, // timpani
+  q: { wave: "sawtooth", attack: 0.15,  decay: 0.9,  sustain: 0.7,  release: 1.0,  gain: 0.13 }, // full strings
+  k: { wave: "sine",     attack: 0.12,  decay: 1.2,  sustain: 0.5,  release: 1.1,  gain: 0.25 }, // organ
 };
 
 const JAZZ_PIECES: PieceAudioMap = {
-  p: { wave: "sine",     attack: 0.02,  decay: 0.3,  sustain: 0.15, release: 0.25, gain: 0.25 }, // walking bass
-  n: { wave: "triangle", attack: 0.03,  decay: 0.25, sustain: 0.2,  release: 0.2,  gain: 0.2 },  // muted trumpet
-  b: { wave: "sine",     attack: 0.005, decay: 0.5,  sustain: 0.1,  release: 0.6,  gain: 0.3 },  // vibraphone
-  r: { wave: "square",   attack: 0.01,  decay: 0.4,  sustain: 0.3,  release: 0.3,  gain: 0.08 }, // upright bass
-  q: { wave: "sawtooth", attack: 0.04,  decay: 0.5,  sustain: 0.4,  release: 0.5,  gain: 0.12 }, // saxophone
-  k: { wave: "sine",     attack: 0.01,  decay: 0.6,  sustain: 0.2,  release: 0.5,  gain: 0.3 },  // piano chord
+  p: { wave: "sine",     attack: 0.05,  decay: 0.5,  sustain: 0.25, release: 0.5,  gain: 0.22 }, // walking bass
+  n: { wave: "triangle", attack: 0.06,  decay: 0.4,  sustain: 0.3,  release: 0.5,  gain: 0.18 }, // muted trumpet
+  b: { wave: "sine",     attack: 0.04,  decay: 0.7,  sustain: 0.2,  release: 0.8,  gain: 0.25 }, // vibraphone
+  r: { wave: "square",   attack: 0.04,  decay: 0.6,  sustain: 0.35, release: 0.5,  gain: 0.07 }, // upright bass
+  q: { wave: "sawtooth", attack: 0.08,  decay: 0.7,  sustain: 0.45, release: 0.7,  gain: 0.1 },  // saxophone
+  k: { wave: "sine",     attack: 0.05,  decay: 0.8,  sustain: 0.3,  release: 0.7,  gain: 0.25 }, // piano chord
 };
 
 const ELECTRONIC_PIECES: PieceAudioMap = {
-  p: { wave: "sine",     attack: 0.001, decay: 0.15, sustain: 0.0,  release: 0.1,  gain: 0.35 }, // 808 kick
-  n: { wave: "triangle", attack: 0.001, decay: 0.08, sustain: 0.0,  release: 0.05, gain: 0.3 },  // arp blip
-  b: { wave: "sawtooth", attack: 0.05,  decay: 0.3,  sustain: 0.4,  release: 0.3,  gain: 0.1 },  // pad slice
-  r: { wave: "square",   attack: 0.001, decay: 0.4,  sustain: 0.1,  release: 0.2,  gain: 0.15 }, // bass drop
-  q: { wave: "sawtooth", attack: 0.01,  decay: 0.3,  sustain: 0.6,  release: 0.4,  gain: 0.18 }, // supersaw
-  k: { wave: "square",   attack: 0.02,  decay: 0.5,  sustain: 0.3,  release: 0.4,  gain: 0.2 },  // vocoder-like
+  p: { wave: "sine",     attack: 0.01,  decay: 0.3,  sustain: 0.1,  release: 0.3,  gain: 0.3 },  // 808 kick
+  n: { wave: "triangle", attack: 0.02,  decay: 0.2,  sustain: 0.1,  release: 0.2,  gain: 0.25 }, // arp blip
+  b: { wave: "sawtooth", attack: 0.08,  decay: 0.5,  sustain: 0.45, release: 0.5,  gain: 0.09 }, // pad slice
+  r: { wave: "square",   attack: 0.02,  decay: 0.6,  sustain: 0.15, release: 0.4,  gain: 0.12 }, // bass drop
+  q: { wave: "sawtooth", attack: 0.04,  decay: 0.5,  sustain: 0.6,  release: 0.6,  gain: 0.15 }, // supersaw
+  k: { wave: "square",   attack: 0.05,  decay: 0.7,  sustain: 0.35, release: 0.6,  gain: 0.18 }, // vocoder-like
 };
 
 const MINIMAL_PIECES: PieceAudioMap = {
-  p: { wave: "sine", attack: 0.02,  decay: 0.3,  sustain: 0.1, release: 0.3, gain: 0.2 },
-  n: { wave: "sine", attack: 0.03,  decay: 0.25, sustain: 0.2, release: 0.3, gain: 0.22 },
-  b: { wave: "sine", attack: 0.04,  decay: 0.35, sustain: 0.15, release: 0.4, gain: 0.18 },
-  r: { wave: "sine", attack: 0.01,  decay: 0.4,  sustain: 0.2, release: 0.3, gain: 0.2 },
-  q: { wave: "sine", attack: 0.05,  decay: 0.5,  sustain: 0.3, release: 0.5, gain: 0.22 },
-  k: { wave: "sine", attack: 0.06,  decay: 0.6,  sustain: 0.25, release: 0.6, gain: 0.25 },
+  p: { wave: "sine", attack: 0.06,  decay: 0.5,  sustain: 0.2,  release: 0.6, gain: 0.18 },
+  n: { wave: "sine", attack: 0.07,  decay: 0.45, sustain: 0.3,  release: 0.6, gain: 0.2 },
+  b: { wave: "sine", attack: 0.08,  decay: 0.55, sustain: 0.25, release: 0.7, gain: 0.16 },
+  r: { wave: "sine", attack: 0.05,  decay: 0.6,  sustain: 0.3,  release: 0.6, gain: 0.18 },
+  q: { wave: "sine", attack: 0.1,   decay: 0.7,  sustain: 0.4,  release: 0.8, gain: 0.2 },
+  k: { wave: "sine", attack: 0.12,  decay: 0.8,  sustain: 0.35, release: 0.9, gain: 0.22 },
 };
 
 export const THEMES: readonly InstrumentTheme[] = [
@@ -91,12 +91,12 @@ export const THEMES: readonly InstrumentTheme[] = [
       baseWave: "sine",
       tensionWave: "triangle",
       sparkleEnabled: true,
-      reverbMix: 0.15,
+      reverbMix: 0.25,
       droneGain: 0.04,
     },
     effects: {
-      reverbDecay: 2,
-      reverbMix: 0.15,
+      reverbDecay: 3,
+      reverbMix: 0.25,
     },
   },
   {

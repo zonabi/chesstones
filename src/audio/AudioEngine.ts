@@ -231,55 +231,62 @@ export class AudioEngine {
     const toFreq = squareToFreq(tf, tr, rootNote, scale);
     const pan = (FILES.indexOf(tf) - 3.5) / 3.5;
 
-    // Departure note (quick)
-    this.playNote(fromFreq, pieceType, 0.15, pan * 0.5);
+    // Departure note (gentle, lingering)
+    this.playNote(fromFreq, pieceType, 0.3, pan * 0.5, 0.7);
 
-    // Arrival note (sustained)
-    setTimeout(() => this.playNote(toFreq, pieceType, 0.4, pan), 150);
+    // Arrival note (sustained, full volume)
+    setTimeout(() => this.playNote(toFreq, pieceType, 0.7, pan), 280);
 
     // Overlay effects
-    if (isCapture) setTimeout(() => this.playCaptureSound(toFreq), 100);
-    if (isCastling) setTimeout(() => this.playCastlingSound(toFreq), 200);
-    if (isCheck) setTimeout(() => this.playCheckSound(toFreq), 300);
+    if (isCapture) setTimeout(() => this.playCaptureSound(toFreq), 200);
+    if (isCastling) setTimeout(() => this.playCastlingSound(toFreq), 350);
+    if (isCheck) setTimeout(() => this.playCheckSound(toFreq), 450);
   }
 
   // ─── SPECIAL SOUNDS ─────────────────────────────────────
 
-  /** Descending sawtooth + noise burst for a capture */
+  /** Resonant bell-like minor chord for a capture */
   private playCaptureSound(baseFreq: number): void {
-    if (!this.ctx || !this.masterGain) return;
+    if (!this.ctx || !this.masterGain || !this.reverb) return;
 
     const t = this.ctx.currentTime;
 
-    // Descending sawtooth
-    const osc = this.ctx.createOscillator();
-    osc.type = "sawtooth";
-    osc.frequency.setValueAtTime(baseFreq * 1.5, t);
-    osc.frequency.exponentialRampToValueAtTime(baseFreq * 0.25, t + 0.6);
-    const env = this.ctx.createGain();
-    env.gain.setValueAtTime(0.2, t);
-    env.gain.exponentialRampToValueAtTime(0.001, t + 0.6);
+    // Play a soft minor triad (root, minor third, fifth) as bell-like sine tones
+    const ratios = [1, 1.2, 1.5]; // root, minor 3rd, perfect 5th
+    const gains = [0.14, 0.10, 0.08];
 
-    // Noise burst
-    const bufferSize = this.ctx.sampleRate * 0.1;
-    const noiseBuffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
-    const data = noiseBuffer.getChannelData(0);
-    for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
-    const noise = this.ctx.createBufferSource();
-    noise.buffer = noiseBuffer;
-    const noiseGain = this.ctx.createGain();
-    noiseGain.gain.setValueAtTime(0.08, t);
-    noiseGain.gain.exponentialRampToValueAtTime(0.001, t + 0.15);
+    ratios.forEach((ratio, i) => {
+      const osc = this.ctx!.createOscillator();
+      osc.type = "sine";
+      osc.frequency.value = baseFreq * ratio;
 
-    osc.connect(env);
-    env.connect(this.masterGain);
-    noise.connect(noiseGain);
-    noiseGain.connect(this.masterGain);
+      const env = this.ctx!.createGain();
+      const delay = i * 0.04; // slight stagger for warmth
+      env.gain.setValueAtTime(0, t + delay);
+      env.gain.linearRampToValueAtTime(gains[i], t + delay + 0.06);
+      env.gain.exponentialRampToValueAtTime(0.001, t + delay + 1.2);
 
-    osc.start(t);
-    osc.stop(t + 0.7);
-    noise.start(t);
-    noise.stop(t + 0.15);
+      osc.connect(env);
+      env.connect(this.masterGain!);
+      env.connect(this.reverb!);
+
+      osc.start(t + delay);
+      osc.stop(t + delay + 1.4);
+    });
+
+    // Gentle low undertone that swells and fades — adds gravitas
+    const sub = this.ctx.createOscillator();
+    sub.type = "sine";
+    sub.frequency.value = baseFreq * 0.5;
+    const subEnv = this.ctx.createGain();
+    subEnv.gain.setValueAtTime(0, t);
+    subEnv.gain.linearRampToValueAtTime(0.06, t + 0.15);
+    subEnv.gain.exponentialRampToValueAtTime(0.001, t + 1.0);
+    sub.connect(subEnv);
+    subEnv.connect(this.masterGain);
+    subEnv.connect(this.reverb);
+    sub.start(t);
+    sub.stop(t + 1.2);
   }
 
   /** Perfect fifth chord resolution for castling */

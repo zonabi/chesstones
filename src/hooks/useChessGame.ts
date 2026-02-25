@@ -5,7 +5,6 @@ import type {
 } from "@/types";
 import { AudioEngine } from "@/audio";
 import type { AudioSettings } from "./useAudioSettings";
-import type { RootNote } from "@/audio/scales";
 import {
   createInitialBoard, makeMove, parseSquare, sqStr,
   getLegalMoves, isInCheck,
@@ -84,7 +83,7 @@ export function useChessGame(
   }
 
   // Extract scale params for audio calls
-  const rootNote = getRootNoteFromSettings(audioSettings);
+  const rootNote: RootNote = audioSettings?.data.rootNote ?? "C";
   const scale = audioSettings?.scale;
   const clickSoundEnabled = audioSettings?.data.clickSoundEnabled ?? true;
 
@@ -174,9 +173,9 @@ export function useChessGame(
     const san = moveToSAN(board, move, castling);
     setMoveNotation((prev) => [...prev, san]);
 
-    // Visual pulse
+    // Visual pulse (longer to match smoother audio)
     setSquarePulse({ [move.from]: "departure", [move.to]: "arrival" });
-    setTimeout(() => setSquarePulse({}), 600);
+    setTimeout(() => setSquarePulse({}), 900);
 
     // Apply state
     setBoard(newBoard);

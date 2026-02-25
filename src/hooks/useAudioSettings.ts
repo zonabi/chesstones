@@ -1,8 +1,8 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import type { AudioSettingsData } from "@/types";
 import type { RootNote } from "@/audio/scales";
 import type { InstrumentTheme } from "@/audio/themes";
-import { SCALES, getScaleById } from "@/audio/scales";
+import { SCALES, getScaleById, ROOT_NOTES } from "@/audio/scales";
 import { THEMES, getThemeById } from "@/audio/themes";
 
 const STORAGE_KEY = "chesstones-audio-settings";
@@ -15,12 +15,21 @@ const DEFAULT_SETTINGS: AudioSettingsData = {
   clickSoundEnabled: true,
 };
 
+function isValidRootNote(value: unknown): value is RootNote {
+  return typeof value === "string" && ROOT_NOTES.includes(value as RootNote);
+}
+
 function loadSettings(): AudioSettingsData {
   try {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) {
       const parsed = JSON.parse(saved) as Partial<AudioSettingsData>;
-      return { ...DEFAULT_SETTINGS, ...parsed };
+      const merged = { ...DEFAULT_SETTINGS, ...parsed };
+      // Validate rootNote from localStorage
+      if (!isValidRootNote(merged.rootNote)) {
+        merged.rootNote = DEFAULT_SETTINGS.rootNote;
+      }
+      return merged;
     }
   } catch {
     // ignore corrupt localStorage
@@ -51,9 +60,14 @@ export interface UseAudioSettingsReturn {
  */
 export function useAudioSettings(): UseAudioSettingsReturn {
   const [data, setData] = useState<AudioSettingsData>(loadSettings);
+  const hasMounted = useRef(false);
 
-  // Persist on change
+  // Persist on change (skip initial mount to avoid redundant write)
   useEffect(() => {
+    if (!hasMounted.current) {
+      hasMounted.current = true;
+      return;
+    }
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
   }, [data]);
 
