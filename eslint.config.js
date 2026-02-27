@@ -13,7 +13,11 @@ export default tseslint.config(
   // React Hooks rules
   {
     plugins: { "react-hooks": reactHooks },
-    rules: reactHooks.configs.recommended.rules,
+    rules: {
+      ...reactHooks.configs.recommended.rules,
+      // Downgrade immutability to warning (callback refs pattern is intentional)
+      "react-hooks/immutability": "warn",
+    },
   },
 
   // Prettier: disable formatting rules that conflict
